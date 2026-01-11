@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DiscordProjectSettings">
+    <option name="show" value="ASK" />
+    <option name="nameOverrideEnabled" value="true" />
+    <option name="nameOverrideText" value="Sarthrak Fantasy Mod" />
+    <option name="description" value="My first Minecraft Mod" />
+    <option name="applicationTheme" value="2024-icons" />
+    <option name="iconsTheme" value="default" />
+    <option name="button1Title" value="" />
+    <option name="button1Url" value="" />
+    <option name="button2Title" value="" />
+    <option name="button2Url" value="" />
+    <option name="customApplicationId" value="" />
+  </component>
+</project>

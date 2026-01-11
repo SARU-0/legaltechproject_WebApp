@@ -2,7 +2,7 @@ import React from 'react';
 import { Mail, Phone, MapPin, Calendar, Edit2 } from 'lucide-react';
 import '../Pages.css';
 
-const Profil = () => {
+const Profil = ({user}) => {
   return (
     <div className="page-container">
       <div className="page-header">
@@ -24,8 +24,8 @@ const Profil = () => {
               <span>JD</span>
             </div>
             <div className="profile-info-main">
-              <h2>Jean Dupont</h2>
-              <p>Administrateur</p>
+              <h2>{user.nom} {user.prenom}</h2>
+              <p>{user.statut}</p>
             </div>
           </div>
 
@@ -34,11 +34,12 @@ const Profil = () => {
               <Mail size={20} className="detail-icon" />
               <div>
                 <p className="detail-label">Email</p>
-                <p className="detail-value">jean.dupont@example.com</p>
+                <p className="detail-value">{user.email}</p>
               </div>
             </div>
 
             <div className="detail-item">
+              {/*
               <Phone size={20} className="detail-icon" />
               <div>
                 <p className="detail-label">Téléphone</p>
@@ -60,6 +61,7 @@ const Profil = () => {
                 <p className="detail-label">Membre depuis</p>
                 <p className="detail-value">Janvier 2024</p>
               </div>
+              */}
             </div>
           </div>
         </div>

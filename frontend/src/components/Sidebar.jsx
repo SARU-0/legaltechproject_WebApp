@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Home, AlertCircle, User, Settings, ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
 import '../styles/Sidebar.css';
 
-const Sidebar = ({ onNavigate, currentPage }) => {
+const Sidebar = ({ onNavigate, currentPage, user, onLogout }) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
 
     const menuItems = [
@@ -88,7 +88,7 @@ const Sidebar = ({ onNavigate, currentPage }) => {
             {!isCollapsed && (
                 <div className="sidebar-shortcuts">
                     <p className="shortcuts-title">Raccourcis</p>
-                    <button className="nav-item">
+                    <button className="nav-item" onClick={onLogout}>
                         <LogOut className="nav-icon" size={20} />
                         <span className="nav-label">Déconnexion</span>
                     </button>
@@ -104,8 +104,8 @@ const Sidebar = ({ onNavigate, currentPage }) => {
 
                     {!isCollapsed && (
                         <div className="user-info">
-                            <p className="user-name">Jean Dupont</p>
-                            <p className="user-email">jean@example.com</p>
+                            <p className="user-name">{user.prenom} {user.nom}</p>
+                            <p className="user-email">{user.email}</p>
                         </div>
                     )}
                 </div>

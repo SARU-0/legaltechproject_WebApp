@@ -1,46 +1,81 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AlertCircle, Clock, CheckCircle, XCircle, Filter } from 'lucide-react';
-import '../Pages.css';
+import '../styles/SharedPages.css';
+import '../styles/Signalements.css';
 
 const Signalements = () => {
-  const [filter, setFilter] = useState('all');
+  const [reports, setReports] = useState([]);
 
-  const signalements = [
-    { id: 1, title: 'Problème de paiement', status: 'pending', priority: 'high', date: '2025-01-10', user: 'Marie Durand' },
-    { id: 2, title: 'Bug sur la page produit', status: 'in-progress', priority: 'medium', date: '2025-01-09', user: 'Pierre Martin' },
-    { id: 3, title: 'Demande de remboursement', status: 'resolved', priority: 'low', date: '2025-01-08', user: 'Sophie Bernard' },
-    { id: 4, title: 'Erreur 404 non résolue', status: 'pending', priority: 'high', date: '2025-01-08', user: 'Luc Petit' },
-    { id: 5, title: 'Performance lente', status: 'in-progress', priority: 'medium', date: '2025-01-07', user: 'Anne Dubois' },
-    { id: 6, title: 'Suggestion d\'amélioration', status: 'resolved', priority: 'low', date: '2025-01-06', user: 'Thomas Roux' },
-    { id: 7, title: 'Problème de connexion', status: 'pending', priority: 'high', date: '2025-01-06', user: 'Julie Moreau' },
-    { id: 8, title: 'Question sur les frais', status: 'resolved', priority: 'low', date: '2025-01-05', user: 'Marc Simon' },
-  ];
+  useEffect(() => {
+    fetch("http://localhost:8081/reports")
+      .then(res => res.json())
+      .then(data => setReports(data))
+      .catch(err => console.error(err));
+  }, []);
 
-  const getStatusConfig = (status) => {
-    switch (status) {
-      case 'pending':
-        return { label: 'En attente', color: '#f59e0b', icon: Clock };
-      case 'in-progress':
-        return { label: 'En cours', color: '#667eea', icon: AlertCircle };
-      case 'resolved':
-        return { label: 'Résolu', color: '#10b981', icon: CheckCircle };
+  // Fonction pour obtenir la config du statut (icône, couleur, badge)
+  const getStatusConfig = (statut) => {
+    switch (statut) {
+      case 'En attente':
+        return {
+          icon: Clock,
+          color: '#f59e0b',
+          bgColor: '#fef3c7',
+          label: 'En attente'
+        };
+      case 'En cours':
+        return {
+          icon: AlertCircle,
+          color: '#3b82f6',
+          bgColor: '#dbeafe',
+          label: 'En cours'
+        };
+      case 'Résolu':
+        return {
+          icon: CheckCircle,
+          color: '#10b981',
+          bgColor: '#d1fae5',
+          label: 'Résolu'
+        };
+      case 'Envoyé':
+        return {
+          icon: Clock,
+          color: '#f59e0b',
+          bgColor: '#fef3c7',
+          label: 'Envoyé'
+        };
+      case 'Pris en charge':
+        return {
+          icon: AlertCircle,
+          color: '#3b82f6',
+          bgColor: '#dbeafe',
+          label: 'Pris en charge'
+        };
       default:
-        return { label: 'Inconnu', color: '#6b7280', icon: XCircle };
+        return {
+          icon: XCircle,
+          color: '#6b7280',
+          bgColor: '#f3f4f6',
+          label: statut
+        };
     }
   };
 
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case 'high': return '#ef4444';
-      case 'medium': return '#f59e0b';
-      case 'low': return '#10b981';
-      default: return '#6b7280';
+  // Fonction pour obtenir la couleur de la catégorie
+  const getCategoryColor = (categorie) => {
+    switch (categorie) {
+      case 'Harcèlement':
+        return '#ef4444';
+      case 'Discrimination':
+        return '#f59e0b';
+      case 'Conflits d\'intérêts':
+        return '#8408eaff';
+      case 'Corruption':
+        return '#dc2626';
+      default:
+        return '#667eea';
     }
   };
-
-  const filteredSignalements = filter === 'all' 
-    ? signalements 
-    : signalements.filter(s => s.status === filter);
 
   return (
     <div className="page-container">
@@ -51,71 +86,58 @@ const Signalements = () => {
         </div>
       </div>
 
-      {/* Filtres */}
-      <div className="filter-bar">
-        <div className="filter-buttons">
-          <button 
-            className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
-            onClick={() => setFilter('all')}
-          >
-            <Filter size={16} />
-            Tous ({signalements.length})
-          </button>
-          <button 
-            className={`filter-btn ${filter === 'pending' ? 'active' : ''}`}
-            onClick={() => setFilter('pending')}
-          >
-            En attente ({signalements.filter(s => s.status === 'pending').length})
-          </button>
-          <button 
-            className={`filter-btn ${filter === 'in-progress' ? 'active' : ''}`}
-            onClick={() => setFilter('in-progress')}
-          >
-            En cours ({signalements.filter(s => s.status === 'in-progress').length})
-          </button>
-          <button 
-            className={`filter-btn ${filter === 'resolved' ? 'active' : ''}`}
-            onClick={() => setFilter('resolved')}
-          >
-            Résolus ({signalements.filter(s => s.status === 'resolved').length})
-          </button>
-        </div>
-      </div>
-
       {/* Liste des signalements */}
       <div className="signalements-list">
-        {filteredSignalements.map((signalement, index) => {
-          const statusConfig = getStatusConfig(signalement.status);
-          const StatusIcon = statusConfig.icon;
-          
-          return (
-            <div 
-              key={signalement.id} 
-              className="signalement-card"
-              style={{ animationDelay: `${index * 50}ms` }}
-            >
-              <div className="signalement-header">
-                <div className="signalement-priority" style={{ backgroundColor: getPriorityColor(signalement.priority) }}>
+        {reports.length === 0 ? (
+          <div className="empty-state">
+            <p>Aucun signalement trouvé</p>
+          </div>
+        ) : (
+          reports.map((item, index) => {
+            const statusConfig = getStatusConfig(item.StatutSi);
+            const StatusIcon = statusConfig.icon;
+
+            return (
+              <div
+                key={item.idSignalement}
+                className="signalement-card"
+                style={{
+                  animationDelay: `${index * 50}ms`,
+                  borderLeftColor: getCategoryColor(item.Categorie),
+                  borderLeftWidth: '4px',
+                  borderLeftStyle: 'solid'
+                }}
+              >
+                <div className="signalement-header">
+                  <h3 className="signalement-title">{item.Titre}</h3>
+                  <span
+                    className="signalement-badge"
+                    style={{
+                      backgroundColor: statusConfig.bgColor,
+                      color: statusConfig.color
+                    }}
+                  >
+                    <StatusIcon size={16} />
+                    {statusConfig.label}
+                  </span>
                 </div>
-                <h3 className="signalement-title">{signalement.title}</h3>
-                <div 
-                  className="signalement-status"
-                  style={{ 
-                    backgroundColor: `${statusConfig.color}15`,
-                    color: statusConfig.color
-                  }}
-                >
-                  <StatusIcon size={14} />
-                  {statusConfig.label}
+
+                <p className="signalement-description">{item.Description}</p>
+
+                <div className="signalement-meta">
+                  <span className="signalement-category" style={{ color: getCategoryColor(item.Categorie) }}>
+                    {item.Categorie}
+                  </span>
+                </div>
+
+                <div className="signalement-footer">
+                  <span className="signalement-user">👤 Utilisateur {item.idUtil}</span>
+                  <span className="signalement-date">📅 {new Date(item.Date).toLocaleDateString('fr-FR')}</span>
                 </div>
               </div>
-              <div className="signalement-footer">
-                <span className="signalement-user">👤 {signalement.user}</span>
-                <span className="signalement-date">📅 {signalement.date}</span>
-              </div>
-            </div>
-          );
-        })}
+            );
+          })
+        )}
       </div>
     </div>
   );

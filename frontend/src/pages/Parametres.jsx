@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Bell, Lock, Globe, Moon, Shield, Mail } from 'lucide-react';
-import '../Pages.css';
+import '../styles/SharedPages.css';
+import '../styles/Parametres.css';
 
 const Parametres = () => {
   const [settings, setSettings] = useState({
@@ -34,15 +35,15 @@ const Parametres = () => {
             <Bell size={20} />
             <h3>Notifications</h3>
           </div>
-          
+
           <div className="settings-item">
             <div className="settings-item-info">
               <p className="settings-item-title">Notifications push</p>
               <p className="settings-item-desc">Recevez des notifications sur votre appareil</p>
             </div>
             <label className="toggle-switch">
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 checked={settings.notifications}
                 onChange={() => toggleSetting('notifications')}
               />
@@ -56,8 +57,8 @@ const Parametres = () => {
               <p className="settings-item-desc">Recevez un résumé hebdomadaire par email</p>
             </div>
             <label className="toggle-switch">
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 checked={settings.emailAlerts}
                 onChange={() => toggleSetting('emailAlerts')}
               />
@@ -72,15 +73,15 @@ const Parametres = () => {
             <Shield size={20} />
             <h3>Sécurité</h3>
           </div>
-          
+
           <div className="settings-item">
             <div className="settings-item-info">
               <p className="settings-item-title">Authentification à deux facteurs</p>
               <p className="settings-item-desc">Sécurisez votre compte avec 2FA</p>
             </div>
             <label className="toggle-switch">
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 checked={settings.twoFactor}
                 onChange={() => toggleSetting('twoFactor')}
               />
@@ -106,15 +107,15 @@ const Parametres = () => {
             <Moon size={20} />
             <h3>Apparence</h3>
           </div>
-          
+
           <div className="settings-item">
             <div className="settings-item-info">
               <p className="settings-item-title">Mode sombre</p>
               <p className="settings-item-desc">Activer le thème sombre</p>
             </div>
             <label className="toggle-switch">
-              <input 
-                type="checkbox" 
+              <input
+                type="checkbox"
                 checked={settings.darkMode}
                 onChange={() => toggleSetting('darkMode')}
               />
@@ -139,7 +140,7 @@ const Parametres = () => {
           <div className="settings-section-header">
             <h3>Zone dangereuse</h3>
           </div>
-          
+
           <button className="danger-btn">
             Supprimer mon compte
           </button>

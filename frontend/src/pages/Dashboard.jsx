@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import '../Pages.css';
+import '../styles/SharedPages.css';
+import '../styles/Dashboard.css';
 
 const Dashboard = () => {
     /*Ici, on crée une variable/constante qui permettra de stocker les données récupérées via la requête côté backend.

@@ -1,11 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Sidebar from './components/Sidebar';
 import Dashboard from './pages/Dashboard';
 import Signalements from './pages/Signalements';
 import Profil from './pages/Profil';
 import Parametres from './pages/Parametres';
 import Login from './pages/Login'; // nouvelle page de login
-import './App.css';
+import './styles/App.css';
 
 function App() {
     const [currentPage, setCurrentPage] = useState('dashboard');

@@ -1,8 +1,9 @@
 import React from 'react';
 import { Mail, Phone, MapPin, Calendar, Edit2 } from 'lucide-react';
-import '../Pages.css';
+import '../styles/SharedPages.css';
+import '../styles/Profil.css';
 
-const Profil = ({user}) => {
+const Profil = ({ user }) => {
   return (
     <div className="page-container">
       <div className="page-header">

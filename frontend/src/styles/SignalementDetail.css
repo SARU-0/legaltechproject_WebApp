@@ -1,0 +1,115 @@
+/* ========================================
+   SIGNALEMENT DETAIL
+   ======================================== */
+
+.detail-container {
+    max-width: 1200px;
+}
+
+
+.back-button {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.detail-container {
+    max-width: 1200px;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+
+}
+
+.signalement-actions {
+    background-color: white;
+    padding: 24px;
+    border-radius: 20px;
+    flex: 1;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.accept-btn {
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
+}
+
+.accept-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px -1px rgba(16, 185, 129, 0.3);
+}
+
+.signalement-card {
+    flex: 0 0 800px;
+}
+
+
+.detail-content {
+    display: grid;
+    gap: 24px;
+}
+
+.detail-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f3f4f6;
+    padding-bottom: 16px;
+}
+
+.detail-status-badge {
+    background: #dbeafe;
+    color: #3b82f6;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.detail-section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    color: #374151;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.detail-description {
+    color: #6b7280;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    font-size: 15px;
+}
+
+.detail-meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #f3f4f6;
+}
+
+.detail-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #6b7280;
+    font-size: 14px;
+}

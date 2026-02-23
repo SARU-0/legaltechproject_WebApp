@@ -1,4 +1,5 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
 import '../styles/SharedPages.css';
 import '../styles/Dashboard.css';
 
@@ -19,66 +20,78 @@ const Dashboard = () => {
             .catch(err => console.error(err));
     }, []);
 
-    const handlePrendreEnCharge = (idSignalement) => {
-        // Mise à jour locale immédiate
-        setReports(prevReports =>
-            prevReports.map(r =>
-                r.idSignalement === idSignalement
-                    ? { ...r, StatutSi: "Pris en charge" } // <-- ici on utilise StatutSi
-                    : r
-            )
-        );
-        // Mise à jour côté backend
-        fetch(`http://localhost:8081/reports/${idSignalement}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ StatutSi: "Pris en charge" }) // <-- backend reçoit StatutSi
-        });
-    }
+    const sentReports = reports.filter(report => report.StatutSi === 'Envoyé').length;
+    const acceptedReports = reports.filter(report => report.StatutSi === 'Pris en charge').length;
+
+    const data = [
+        { name: "Envoyé", value: sentReports },
+        { name: "Pris en charge", value: acceptedReports },
+    ];
+
+    const COLORS = ["#f59e0b", "#3b82f6"];
+
 
     return (
-    <div className="page-container">
-        <table>
-            <thead>
-            <tr>
-                <th>Utilisateur</th>
-                <th>Titre</th>
-                <th>Description</th>
-                <th>Catégorie</th>
-                <th>Date</th>
-                <th>Statut</th>
-                <th>Action</th>
-            </tr>
-            </thead>
-            <tbody>
-            {/*Chaque ligne de notre tableau est rempli grâce aux données récupérées et la méthode .map().
+        <div className="page-container">
+            <div className="recap-container">
+                <h1>Progression des signalements</h1>
+                <div className="data-container">
+                    <div className="chart-container" style={{ width: '100%', height: 250 }}>
+                        <ResponsiveContainer>
+                            <PieChart>
+                                <Pie
+                                    data={data}
+                                    cx="50%"
+                                    cy="50%"
+                                    innerRadius={60}
+                                    outerRadius={80}
+                                    paddingAngle={5}
+                                    dataKey="value"
+                                >
+                                    {data.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={COLORS[index]} />
+                                    ))}
+                                </Pie>
+                                <Tooltip />
+                                <Legend />
+                            </PieChart>
+                        </ResponsiveContainer>
+                    </div>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Utilisateur</th>
+                        <th>Titre</th>
+                        <th>Description</th>
+                        <th>Catégorie</th>
+                        <th>Date</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {/*Chaque ligne de notre tableau est rempli grâce aux données récupérées et la méthode .map().
             Ensuite pour chaque signalement, identifié grâce à leur id, on remplit les colonnes avec les informations
             propres à chaque signalement. Attention!! Le nom des attributs est important, ils doivent être identiques à ceux
             dans la BDD.*/}
 
-            {reports.map((item) => (
-                <tr key={item.idSignalement}>
-                    <td>{item.idUtil}</td>
-                    <td>{item.Titre}</td>
-                    <td>{item.Description}</td>
-                    <td>{item.Categorie}</td>
-                    {/*Formatage de la date pour un meilleur affichage*/}
-                    <td>{new Date(item.Date).toLocaleDateString()}</td>
-                    <td>{item.StatutSi}</td>
-                    <td>
-                        {item.StatutSi === "Envoyé" && (
-                            <button onClick={() => handlePrendreEnCharge(item.idSignalement)}>
-                                Prendre en charge
-                            </button>
-                        )}
-                    </td>
-                </tr>
-            ))}
-            </tbody>
+                    {reports.map((item) => (
+                        <tr key={item.idSignalement}>
+                            <td>{item.idUtil}</td>
+                            <td>{item.Titre}</td>
+                            <td>{item.Description}</td>
+                            <td>{item.Categorie}</td>
+                            {/*Formatage de la date pour un meilleur affichage*/}
+                            <td>{new Date(item.Date).toLocaleDateString()}</td>
+                            <td>{item.StatutSi}</td>
+                        </tr>
+                    ))}
+                </tbody>
 
-        </table>
-    </div>
-  );
+            </table>
+        </div>
+    );
 };
 
 export default Dashboard;

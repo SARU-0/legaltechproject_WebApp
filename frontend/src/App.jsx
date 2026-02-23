@@ -4,15 +4,20 @@ import Dashboard from './pages/Dashboard';
 import Signalements from './pages/Signalements';
 import Profil from './pages/Profil';
 import Parametres from './pages/Parametres';
+import SignalementDetail from './pages/SignalementDetail';
 import Login from './pages/Login'; // nouvelle page de login
 import './styles/App.css';
 
 function App() {
     const [currentPage, setCurrentPage] = useState('dashboard');
+    const [selectedReportId, setSelectedReportId] = useState(null);
 
     // Fonction pour changer de page
-    const handleNavigate = (pageId) => {
+    const handleNavigate = (pageId, reportId = null) => {
         setCurrentPage(pageId);
+        if (reportId) {
+            setSelectedReportId(reportId);
+        }
     };
 
     // Rendu de la page active
@@ -21,7 +26,9 @@ function App() {
             case 'dashboard':
                 return <Dashboard user={user} />;
             case 'signalements':
-                return <Signalements user={user} />;
+                return <Signalements user={user} onNavigate={handleNavigate} />;
+            case 'details':
+                return <SignalementDetail reportId={selectedReportId} onBack={() => setCurrentPage('signalements')} />;
             case 'profil':
                 return <Profil user={user} />;
             case 'parametres':

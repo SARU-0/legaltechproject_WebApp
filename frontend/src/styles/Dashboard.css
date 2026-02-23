@@ -26,6 +26,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -138,10 +139,12 @@
     transform: scale(1);
     opacity: 0.3;
   }
+
   50% {
     transform: scale(2);
     opacity: 0;
   }
+
   100% {
     transform: scale(1);
     opacity: 0;
@@ -173,4 +176,91 @@
   border-radius: 12px;
   color: #6b7280;
   font-weight: 500;
+}
+
+/* ========================================
+   STYLES DU TABLEAU DASHBOARD
+   ======================================== */
+.page-container table {
+  width: 100%;
+  table-layout: fixed;
+  /* Force le respect des largeurs de colonnes */
+  border-collapse: collapse;
+}
+
+.page-container th,
+.page-container td {
+  height: 60px;
+  /* Force une hauteur identique pour toutes les lignes */
+  padding: 0 15px;
+  vertical-align: middle;
+  white-space: nowrap;
+  /* Empêche le texte de passer à la ligne */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* Ajoute "..." si le texte est trop long */
+  border-bottom: 1px solid #f3f4f6;
+  text-align: left;
+}
+
+/* Utilisateur */
+.page-container th:nth-child(1),
+.page-container td:nth-child(1) {
+  width: 150px;
+}
+
+/* Titre */
+.page-container th:nth-child(2),
+.page-container td:nth-child(2) {
+  width: 250px;
+}
+
+/* Description */
+.page-container th:nth-child(3),
+.page-container td:nth-child(3) {
+  width: auto;
+}
+
+/* Catégorie */
+.page-container th:nth-child(4),
+.page-container td:nth-child(4) {
+  width: 150px;
+}
+
+/* Date */
+.page-container th:nth-child(5),
+.page-container td:nth-child(5) {
+  width: 130px;
+}
+
+/* Statut */
+.page-container th:nth-child(6),
+.page-container td:nth-child(6) {
+  width: 140px;
+}
+
+.recap-container {
+  background: white;
+  padding: 30px;
+  margin-bottom: 30px;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  min-height: 400px;
+}
+
+.recap-container h1 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+  padding-bottom: 20px;
+  margin: 0;
+}
+
+.data-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
 }

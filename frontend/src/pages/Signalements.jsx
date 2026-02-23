@@ -3,7 +3,7 @@ import { AlertCircle, Clock, CheckCircle, XCircle, Filter } from 'lucide-react';
 import '../styles/SharedPages.css';
 import '../styles/Signalements.css';
 
-const Signalements = () => {
+const Signalements = ({ onNavigate }) => {
   const [reports, setReports] = useState([]);
 
   useEffect(() => {
@@ -101,6 +101,7 @@ const Signalements = () => {
               <div
                 key={item.idSignalement}
                 className="signalement-card"
+                onClick={() => onNavigate('details', item.idSignalement)}
                 style={{
                   animationDelay: `${index * 50}ms`,
                   borderLeftColor: getCategoryColor(item.Categorie),

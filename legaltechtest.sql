@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : jeu. 19 fév. 2026 à 13:33
+-- Généré le : lun. 23 fév. 2026 à 13:08
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -44,7 +44,7 @@ CREATE TABLE `signalement` (
 
 INSERT INTO `signalement` (`idSignalement`, `Titre`, `Description`, `Categorie`, `Date`, `StatutSi`, `idUtil`, `idResponsable`) VALUES
 (1, 'Test', 'Je me fais taper', 'Harcèlement', '2026-01-10', 'Pris en charge', 1, 0),
-(2, 'Aieu', 'Suis trop sombre', 'Discrimination', '2026-01-10', 'Envoyé', 1, 0),
+(2, 'Aieu', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.', 'Discrimination', '2026-01-10', 'Pris en charge', 1, 0),
 (3, 'Conflits', 'Je suis en conlit', 'Conflits d\'intérêts', '2026-01-10', 'Pris en charge', 1, 3),
 (4, 'Harcelement', 'Aiiiie', 'Harcèlement', '2026-01-10', 'Pris en charge', 2, 0),
 (5, 'Testeu', 'description du chef', 'Discrimination', '2026-01-10', 'Envoyé', 2, 0),

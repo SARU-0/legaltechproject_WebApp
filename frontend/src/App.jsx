@@ -66,6 +66,7 @@ function App() {
     }
 
     // Si rôle non autorisé (optionnel)
+    console.log(user);
     if (!["RH", "Juriste"].includes(user.statut)) {
         return (
             <div style={{ textAlign: "center", marginTop: "100px" }}>

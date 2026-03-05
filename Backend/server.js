@@ -7,33 +7,37 @@ app.use(cors())
 app.use(express.json()); // ← important pour parser le JSON
 
 const db = mysql.createConnection({
-    host:"localhost",
+    host: "localhost",
     user: 'root',
     password: '',
-    database:'legaltechtest',
+    database: 'legaltechtest',
 })
 
-app.get('/', (re,res)=> {
+app.get('/', (re, res) => {
     return res.json("From Backend Side");
 })
 
-app.get('/reports', (req, res)=>{
-    const sql = "SELECT * FROM signalement";
-    db.query(sql, (err, data)=>{
-        if(err) return res.json(err);
+app.get('/reports', (req, res) => {
+    const sql = `SELECT s.*, cs.Libelle, ss.LibelleStatutSi FROM signalement s
+                INNER JOIN categoriesignalement cs ON s.IdCatSi = cs.IdCatSi
+                INNER JOIN statutsignalement ss ON s.IdStatutSi = ss.IdStatutSi `;
+    db.query(sql, (err, data) => {
+        if (err) return res.json(err);
         return res.json(data);
     })
 })
 
-app.put('/reports/:idSignalement', (req, res) => {
-    const idSignalement = req.params.idSignalement;
-    const {StatutSi} = req.body;
+app.put('/reports/:IdSignalement', (req, res) => {
+    const IdSignalement = req.params.IdSignalement;
+    const { LibelleStatutSi } = req.body;
 
-    const sql = "UPDATE signalement SET StatutSi = ? WHERE idSignalement = ?";
+    const sql = `UPDATE signalement 
+                SET IdStatutSi = (SELECT IdStatutSi FROM statutsignalement WHERE LibelleStatutSi = ?)
+                WHERE IdSignalement = ?`;
 
-    db.query(sql, [StatutSi, idSignalement], (err, result)=> {
+    db.query(sql, [LibelleStatutSi, IdSignalement], (err, result) => {
         if (err) return res.status(500).json(err);
-        res.json({message : "Statut mis à jour avec succès"})
+        res.json({ message: "Statut mis à jour avec succès" })
     })
 })
 
@@ -42,7 +46,12 @@ app.put('/reports/:idSignalement', (req, res) => {
 app.post("/login", (req, res) => {
     const { email, password } = req.body;
 
-    const sql = "SELECT * FROM utilisateur WHERE Email = ? AND Hash_password = ?";
+    const sql = `
+        SELECT u.*, s.LibelleStatutUtil 
+        FROM Utilisateurs u 
+        INNER JOIN StatutUtilisateur s ON u.IdStatutUtil = s.IdStatutUtil 
+        WHERE u.Email = ? AND u.Hash_password = ?
+    `;
     db.query(sql, [email, password], (err, results) => {
         if (err) return res.status(500).json({ message: "Erreur serveur" });
 
@@ -58,11 +67,10 @@ app.post("/login", (req, res) => {
             nom: user.Nom,
             prenom: user.Prenom,
             email: user.Email,
-            statut: user.Statut
+            statut: user.LibelleStatutUtil
         });
     });
 });
-
 
 /*
 app.post('/users', (req, res) => {
@@ -74,10 +82,10 @@ app.post('/users', (req, res) => {
             console.log(err);
             return res.status(500).json({ error: "Erreur lors de l'insertion" });
         }
-        return res.json({ message: "Utilisateur ajouté", result });
+        return res.json({ message : "Utilisateur ajouté", result });
     });
 });
 */
-app.listen(8081, ()=> {
+app.listen(8081, () => {
     console.log("listening")
 })

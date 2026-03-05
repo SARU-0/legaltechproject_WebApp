@@ -94,17 +94,17 @@ const Signalements = ({ onNavigate }) => {
           </div>
         ) : (
           reports.map((item, index) => {
-            const statusConfig = getStatusConfig(item.StatutSi);
+            const statusConfig = getStatusConfig(item.LibelleStatutSi);
             const StatusIcon = statusConfig.icon;
 
             return (
               <div
-                key={item.idSignalement}
+                key={item.IdSignalement}
                 className="signalement-card"
-                onClick={() => onNavigate('details', item.idSignalement)}
+                onClick={() => onNavigate('details', item.IdSignalement)}
                 style={{
                   animationDelay: `${index * 50}ms`,
-                  borderLeftColor: getCategoryColor(item.Categorie),
+                  borderLeftColor: getCategoryColor(item.Libelle),
                   borderLeftWidth: '4px',
                   borderLeftStyle: 'solid'
                 }}
@@ -126,8 +126,8 @@ const Signalements = ({ onNavigate }) => {
                 <p className="signalement-description">{item.Description}</p>
 
                 <div className="signalement-meta">
-                  <span className="signalement-category" style={{ color: getCategoryColor(item.Categorie) }}>
-                    {item.Categorie}
+                  <span className="signalement-category" style={{ color: getCategoryColor(item.Libelle) }}>
+                    {item.Libelle}
                   </span>
                 </div>
 

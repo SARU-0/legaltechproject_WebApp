@@ -20,8 +20,8 @@ const Dashboard = () => {
             .catch(err => console.error(err));
     }, []);
 
-    const sentReports = reports.filter(report => report.StatutSi === 'Envoyé').length;
-    const acceptedReports = reports.filter(report => report.StatutSi === 'Pris en charge').length;
+    const sentReports = reports.filter(report => report.LibelleStatutSi === 'Envoyé').length;
+    const acceptedReports = reports.filter(report => report.LibelleStatutSi === 'Pris en charge').length;
 
     const data = [
         { name: "Envoyé", value: sentReports },
@@ -77,14 +77,14 @@ const Dashboard = () => {
             dans la BDD.*/}
 
                     {reports.map((item) => (
-                        <tr key={item.idSignalement}>
-                            <td>{item.idUtil}</td>
+                        <tr key={item.IdSignalement}>
+                            <td>{item.IdUtil}</td>
                             <td>{item.Titre}</td>
                             <td>{item.Description}</td>
-                            <td>{item.Categorie}</td>
+                            <td>{item.Libelle}</td>
                             {/*Formatage de la date pour un meilleur affichage*/}
                             <td>{new Date(item.Date).toLocaleDateString()}</td>
-                            <td>{item.StatutSi}</td>
+                            <td>{item.LibelleStatutSi}</td>
                         </tr>
                     ))}
                 </tbody>

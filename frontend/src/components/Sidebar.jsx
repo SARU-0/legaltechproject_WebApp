@@ -1,10 +1,28 @@
-import React, { useState } from 'react';
-import { Home, AlertCircle, User, Settings, ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Home, AlertCircle, User, Settings, ChevronLeft, ChevronRight, LogOut, UserRoundPlus, Sun, Moon, FileText } from 'lucide-react';
 import '../styles/Sidebar.css';
+import logo from '../assets/logo.png';
 
-const Sidebar = ({ onNavigate, currentPage, user, onLogout }) => {
+// Composant Sidebar : Gère la navigation latérale de l'application
+const Sidebar = ({ onNavigate, currentPage, user, onLogout, isDarkMode, toggleTheme }) => {
+    // État pour savoir si la barre est repliée (isCollapsed)
     const [isCollapsed, setIsCollapsed] = useState(false);
+    // État pour stocker le nombre total de signalements (affiché en badge)
+    const [nb_signalement, setNb_signalement] = useState(0);
 
+    // Récupère le nombre de signalements au chargement du composant
+    useEffect(() => {
+        fetch("http://localhost:8081/reports/count")
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.length > 0) {
+                    setNb_signalement(data[0].nb_signalement);
+                }
+            })
+            .catch(err => console.error("Erreur compte signalements:", err));
+    }, []);
+
+    // Définition des éléments du menu de navigation
     const menuItems = [
         {
             id: 'dashboard',
@@ -16,7 +34,8 @@ const Sidebar = ({ onNavigate, currentPage, user, onLogout }) => {
             id: 'signalements',
             label: 'Signalements',
             icon: AlertCircle,
-            badge: 12
+            // Affiche un badge numérique s'il y a des signalements
+            badge: nb_signalement > 0 ? nb_signalement : null
         },
         {
             id: 'profil',
@@ -25,27 +44,40 @@ const Sidebar = ({ onNavigate, currentPage, user, onLogout }) => {
             badge: null
         },
         {
+            id: 'createUser',
+            label: 'Créer Utilisateur',
+            icon: UserRoundPlus,
+            badge: null,
+        },
+        {
             id: 'parametres',
             label: 'Paramètres',
             icon: Settings,
+            badge: null
+        },
+        {
+            id: 'legal',
+            label: 'Légal',
+            icon: FileText,
             badge: null
         }
     ];
 
     return (
         <div className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
-            {/* Header */}
+            {/* En-tête de la Sidebar avec Logo et bouton de repli */}
             <div className="sidebar-header">
                 <div className={`logo-section ${isCollapsed ? 'hidden' : ''}`}>
                     <div className="logo">
-                        <span>A</span>
+                        <img src={logo} alt="Logo" className="sidebar-logo-img" />
                     </div>
                     <div className="logo-text">
-                        <h1>AppName</h1>
+                        <h1>LegalTech</h1>
                         <p>Administration</p>
                     </div>
                 </div>
 
+                {/* Bouton pour réduire ou agrandir la barre latérale */}
                 <button
                     className="collapse-btn"
                     onClick={() => setIsCollapsed(!isCollapsed)}
@@ -54,7 +86,7 @@ const Sidebar = ({ onNavigate, currentPage, user, onLogout }) => {
                 </button>
             </div>
 
-            {/* Navigation */}
+            {/* Navigation principale : Liste les boutons du menu */}
             <nav className="sidebar-nav">
                 {menuItems.map((item, index) => {
                     const Icon = item.icon;
@@ -69,6 +101,7 @@ const Sidebar = ({ onNavigate, currentPage, user, onLogout }) => {
                         >
                             <Icon className="nav-icon" size={20} />
 
+                            {/* N'affiche le texte et le badge que si la barre n'est pas repliée */}
                             {!isCollapsed && (
                                 <>
                                     <span className="nav-label">{item.label}</span>
@@ -84,10 +117,16 @@ const Sidebar = ({ onNavigate, currentPage, user, onLogout }) => {
 
             <div className="sidebar-divider"></div>
 
-            {/* Section secondaire */}
+            {/* Section Raccourcis : Thème et Déconnexion */}
             {!isCollapsed && (
                 <div className="sidebar-shortcuts">
                     <p className="shortcuts-title">Raccourcis</p>
+                    {/* Bouton switch Mode Clair / Sombre */}
+                    <button className="nav-item" onClick={toggleTheme}>
+                        {isDarkMode ? <Sun className="nav-icon" size={20} /> : <Moon className="nav-icon" size={20} />}
+                        <span className="nav-label">{isDarkMode ? 'Mode Clair' : 'Mode Sombre'}</span>
+                    </button>
+                    {/* Bouton de déconnexion */}
                     <button className="nav-item" onClick={onLogout}>
                         <LogOut className="nav-icon" size={20} />
                         <span className="nav-label">Déconnexion</span>
@@ -95,11 +134,12 @@ const Sidebar = ({ onNavigate, currentPage, user, onLogout }) => {
                 </div>
             )}
 
-            {/* Footer avec profil */}
+            {/* Bas de la Sidebar : Profil de l'utilisateur connecté */}
             <div className="sidebar-footer">
                 <div className={`user-profile ${isCollapsed ? 'centered' : ''}`}>
+                    {/* Avatar généré à partir des initiales */}
                     <div className="user-avatar">
-                        <span>JD</span>
+                        <span>{user.prenom ? user.prenom[0].toUpperCase() : ''}{user.nom ? user.nom[0].toUpperCase() : ''}</span>
                     </div>
 
                     {!isCollapsed && (
@@ -114,4 +154,4 @@ const Sidebar = ({ onNavigate, currentPage, user, onLogout }) => {
     );
 };
 
-export default Sidebar;
+export default Sidebar;

@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : lun. 23 mars 2026 à 16:32
+-- Généré le : mar. 24 mars 2026 à 14:01
 -- Version du serveur : 10.4.32-MariaDB
--- Version de PHP : 8.0.30
+-- Version de PHP : 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -57,6 +57,13 @@ CREATE TABLE `commentaires` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Déchargement des données de la table `commentaires`
+--
+
+INSERT INTO `commentaires` (`IdCommentaire`, `Contenu`, `DateCommentaire`, `IdSignalement`, `IdUtil`) VALUES
+(12, 'azertyuiop', '2026-03-24 08:44:07', 9, 3);
+
+--
 -- Déclencheurs `commentaires`
 --
 DELIMITER $$
@@ -90,6 +97,13 @@ CREATE TABLE `documentssignalement` (
   `IdSignalement` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Déchargement des données de la table `documentssignalement`
+--
+
+INSERT INTO `documentssignalement` (`IdDocument`, `NomFichier`, `LienMinIO`, `DateUpload`, `IdSignalement`) VALUES
+(11, 'TP Trigger - Sarbach Théo.pdf', 'signalement_9/TP Trigger - Sarbach Théo.pdf', '2026-03-24 08:42:41', 9);
+
 -- --------------------------------------------------------
 
 --
@@ -115,7 +129,28 @@ INSERT INTO `historiqueactions` (`IdHistoriqueAction`, `DateAction`, `IdTypeActi
 (2, '2026-03-17 08:56:17', 1, 1, NULL, NULL, '{\"action\": \"nouveau_commentaire\"}'),
 (3, '2026-03-17 08:56:17', 2, 1, NULL, '{\"statut\": 2, \"resp\": 1}', '{\"statut\": 3, \"resp\": 1}'),
 (4, '2026-03-23 16:31:36', 3, NULL, NULL, '{\"titre\": \"Signalement Test\"}', NULL),
-(5, '2026-03-23 16:31:36', 3, NULL, NULL, '{\"titre\": \"sdfgsdfgf\"}', NULL);
+(5, '2026-03-23 16:31:36', 3, NULL, NULL, '{\"titre\": \"sdfgsdfgf\"}', NULL),
+(6, '2026-03-24 08:42:40', 1, 3, 9, NULL, '{\"titre\": \"dtyukjbvfdrtyuuuuuuuuuuuu\", \"statut\": 1}'),
+(7, '2026-03-24 08:44:07', 1, 3, 9, NULL, '{\"action\": \"nouveau_commentaire\"}'),
+(8, '2026-03-24 13:45:40', 1, 3, 10, NULL, '{\"titre\": \"test\", \"statut\": 1}');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `salt`
+--
+
+CREATE TABLE `salt` (
+  `idSalt` int(11) NOT NULL,
+  `salt` varchar(150) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `salt`
+--
+
+INSERT INTO `salt` (`idSalt`, `salt`) VALUES
+(1, 'bzubJsy11gzPy2jKL5ta5A==');
 
 -- --------------------------------------------------------
 
@@ -134,6 +169,14 @@ CREATE TABLE `signalement` (
   `IdCatSi` int(11) DEFAULT NULL,
   `isAnonyme` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `signalement`
+--
+
+INSERT INTO `signalement` (`IdSignalement`, `Titre`, `Description`, `Date`, `IdUtil`, `IdResponsable`, `IdStatutSi`, `IdCatSi`, `isAnonyme`) VALUES
+(9, 'dtyukjbvfdrtyuuuuuuuuuuuu', 'test', '2026-03-24', 3, -1, 1, 1, 1),
+(10, 'test', 'test', '2026-03-24', 3, -1, 1, 1, 1);
 
 --
 -- Déclencheurs `signalement`
@@ -241,17 +284,19 @@ CREATE TABLE `utilisateurs` (
   `Email` varchar(150) NOT NULL,
   `Hash_password` varchar(255) NOT NULL,
   `IdStatutUtil` int(11) DEFAULT NULL,
-  `isFirstLog` tinyint(1) NOT NULL DEFAULT 1
+  `isFirstLog` tinyint(1) NOT NULL DEFAULT 1,
+  `salt` varchar(150) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `utilisateurs`
 --
 
-INSERT INTO `utilisateurs` (`IdUtil`, `Nom`, `Prenom`, `Pseudo`, `Email`, `Hash_password`, `IdStatutUtil`, `isFirstLog`) VALUES
-(1, 'Satheesh', 'Sarushanth', 'strifaru', 'ssatheesh@gmail.com', 'ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f', 2, 0),
-(3, 'SARBACH', 'Théo', 'LeGrosFisteurdu10', 'tsarbach@gmail.com', '116cc476ac23bd03eda130210b6cb41eb76f0813d854ac6e7d670d4137f88291', 1, 0),
-(4, 'Melis', 'Thomas', 'ntm', 'tmelis@gmail.com', '116cc476ac23bd03eda130210b6cb41eb76f0813d854ac6e7d670d4137f88291', 3, 0);
+INSERT INTO `utilisateurs` (`IdUtil`, `Nom`, `Prenom`, `Pseudo`, `Email`, `Hash_password`, `IdStatutUtil`, `isFirstLog`, `salt`) VALUES
+(1, 'Satheesh', 'Sarushanth', 'strifaru', 'ssatheesh@gmail.com', 'ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f', 2, 0, ''),
+(3, 'SARBACH', 'Théo', 'LeGrosFisteurdu10', 'tsarbach@gmail.com', '116cc476ac23bd03eda130210b6cb41eb76f0813d854ac6e7d670d4137f88291', 1, 0, ''),
+(4, 'Melis', 'Thomas', 'ntm', 'tmelis@gmail.com', '116cc476ac23bd03eda130210b6cb41eb76f0813d854ac6e7d670d4137f88291', 3, 0, ''),
+(5, 'NOM', 'Prenom', 'TestPseudo', 'email@example.com', 'bf3660b28e37c0478b84fbfc0118f380168b3e9c5c9058b8f77925b147f19843', 1, 0, 'bzubJsy11gzPy2jKL5ta5A==');
 
 --
 -- Déclencheurs `utilisateurs`
@@ -333,6 +378,12 @@ ALTER TABLE `historiqueactions`
   ADD KEY `IdSignalement` (`IdSignalement`);
 
 --
+-- Index pour la table `salt`
+--
+ALTER TABLE `salt`
+  ADD PRIMARY KEY (`idSalt`);
+
+--
 -- Index pour la table `signalement`
 --
 ALTER TABLE `signalement`
@@ -381,25 +432,31 @@ ALTER TABLE `categoriesignalement`
 -- AUTO_INCREMENT pour la table `commentaires`
 --
 ALTER TABLE `commentaires`
-  MODIFY `IdCommentaire` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `IdCommentaire` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT pour la table `documentssignalement`
 --
 ALTER TABLE `documentssignalement`
-  MODIFY `IdDocument` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `IdDocument` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT pour la table `historiqueactions`
 --
 ALTER TABLE `historiqueactions`
-  MODIFY `IdHistoriqueAction` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `IdHistoriqueAction` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT pour la table `salt`
+--
+ALTER TABLE `salt`
+  MODIFY `idSalt` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT pour la table `signalement`
 --
 ALTER TABLE `signalement`
-  MODIFY `IdSignalement` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `IdSignalement` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT pour la table `statutsignalement`
@@ -423,7 +480,7 @@ ALTER TABLE `typeaction`
 -- AUTO_INCREMENT pour la table `utilisateurs`
 --
 ALTER TABLE `utilisateurs`
-  MODIFY `IdUtil` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `IdUtil` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Contraintes pour les tables déchargées

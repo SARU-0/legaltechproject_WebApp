@@ -48,7 +48,7 @@ Le projet repose sur une architecture moderne conteneurisée :
 
 1. **Cloner le projet**
    ```bash
-   git clone [url-du-depot]
+   git clone https://github.com/SARU-0/legaltechproject_WebApp.git
    cd legaltechproject
    ```
 

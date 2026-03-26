@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  # --- Service Base de Données ---
+  mysql-db:
+    image: mysql:8.0
+    container_name: mysql_service
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: legaltechtest
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./legaltechtest.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./mysql_data:/var/lib/mysql
+
+  # --- Service Interface Graphique SQL ---
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin_gui
+    restart: always
+    ports:
+      - "8082:80"
+    environment:
+      - PMA_HOST=mysql-db
+      - MYSQL_ROOT_PASSWORD=root
+    depends_on:
+      - mysql-db
+
+  # --- Service MinIO ---
+  minio-server:
+    image: minio/minio
+    container_name: minio_service
+    restart: always
+    ports:
+      - "9000:9000" # API
+      - "9001:9001" # Console Interface
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - ./minio_data:/data
+    command: server /data --console-address ":9001"

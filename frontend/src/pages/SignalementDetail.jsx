@@ -182,10 +182,11 @@ const SignalementDetail = ({ reportId, onBack, user }) => {
     if (loading) return <div className="page-container"><p>Chargement...</p></div>;
     if (!report) return <div className="page-container"><p>Signalement introuvable.</p><button onClick={onBack}>Retour</button></div>;
 
-    // Barrière de sécurité : Si le dossier est pris par un autre
+    // Barrière de sécurité : Si le dossier est pris par un autre (Sauf pour l'Admin)
     const isTakenByOther = (report.LibelleStatutSi === "Pris en charge" || report.LibelleStatutSi === "Traitement en cours") && 
                             report.IdResponsable && 
-                            report.IdResponsable !== user.IdUtil;
+                            report.IdResponsable !== user.IdUtil &&
+                            user.IdStatutUtil !== 4;
 
     if (isTakenByOther) {
         return (
@@ -331,7 +332,7 @@ const SignalementDetail = ({ reportId, onBack, user }) => {
                                     className={`commentary-bubble ${isOwn ? 'own-message' : 'other-message'}`}
                                 >
                                     <div className="bubble-header">
-                                        <span className="user-name">{comment.Prenom} {comment.Nom}</span>
+                                        <span className="user-name">{comment.info_utilisateur}</span>
                                         <span className="commentary-date">
                                             {new Date(comment.DateCommentaire).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                                         </span>

@@ -132,11 +132,12 @@ app.post("/login", (req, res) => {
     const { email, hashedPassword } = req.body; // hashedPassword est haché une fois par le frontend
     console.log(`Tentative de connexion pour : ${email}`);
 
-    // Étape 1 : Récupérer les infos de l'utilisateur (dont le salt)
+    // Étape 1 : Récupérer les infos de l'utilisateur (dont le salt via une jointure)
     const sql = `
-        SELECT u.*, s.LibelleStatutUtil 
+        SELECT u.*, s.LibelleStatutUtil, slt.salt 
         FROM utilisateurs u 
         INNER JOIN statututilisateur s ON u.IdStatutUtil = s.IdStatutUtil 
+        LEFT JOIN salt slt ON u.salt_id = slt.idSalt
         WHERE u.Email = ?
     `;
 
@@ -181,18 +182,24 @@ app.post("/login", (req, res) => {
             pseudo: user.Pseudo,
             email: user.Email,
             statut: user.LibelleStatutUtil,
+            IdStatutUtil: user.IdStatutUtil,
             isFirstLog: user.isFirstLog
         });
     });
 });
 
-// Récupère les commentaires liés à un signalement spécifique
+// Récupère les commentaires liés à un signalement spécifique (avec gestion de l'anonymat)
 app.get('/reports/:IdSignalement/comments', (req, res) => {
     const IdSignalement = req.params.IdSignalement;
     const sql = `
-        SELECT c.*, u.Nom, u.Prenom 
+        SELECT c.*, 
+        CASE 
+            WHEN s.isAnonyme = 1 AND c.IdUtil = s.IdUtil THEN u.Pseudo 
+            ELSE CONCAT(u.Nom, ' ', u.Prenom) 
+        END AS info_utilisateur
         FROM commentaires c
         INNER JOIN utilisateurs u ON c.IdUtil = u.IdUtil
+        INNER JOIN signalement s ON c.IdSignalement = s.IdSignalement
         WHERE c.IdSignalement = ?
         ORDER BY c.DateCommentaire ASC
     `;
@@ -218,10 +225,26 @@ app.post('/comments', (req, res) => {
 // Finalise la configuration du compte lors de la première connexion (pseudo, mot de passe, sel)
 app.put('/finish-onboarding', (req, res) => {
     const { IdUtil, pseudo, newPassword, salt } = req.body;
-    const sql = "UPDATE utilisateurs SET Pseudo = ?, Hash_password = ?, salt = ?, isFirstLog = 0 WHERE IdUtil = ?";
-    db.query(sql, [pseudo, newPassword, salt, IdUtil], (err, result) => {
-        if (err) return res.status(500).json({ error: "Erreur lors de la mise à jour du profil" });
-        res.json({ message: "Profil configuré avec succès" });
+
+    // Étape 1 : Insérer le nouveau sel dans la table 'salt'
+    const insertSaltSql = "INSERT INTO salt (salt) VALUES (?)";
+    db.query(insertSaltSql, [salt], (err, saltResult) => {
+        if (err) {
+            console.error("Erreur lors de l'insertion du sel :", err.message);
+            return res.status(500).json({ error: "Erreur lors de la configuration du profil (sel)" });
+        }
+
+        const newSaltId = saltResult.insertId;
+
+        // Étape 2 : Mettre à jour l'utilisateur avec son nouveau pseudo, MDP et salt_id
+        const updateUserSql = "UPDATE utilisateurs SET Pseudo = ?, Hash_password = ?, salt_id = ?, isFirstLog = 0 WHERE IdUtil = ?";
+        db.query(updateUserSql, [pseudo, newPassword, newSaltId, IdUtil], (err, userResult) => {
+            if (err) {
+                console.error("Erreur lors de la mise à jour de l'utilisateur :", err.message);
+                return res.status(500).json({ error: "Erreur lors de la mise à jour du profil" });
+            }
+            res.json({ message: "Profil configuré avec succès" });
+        });
     });
 });
 
@@ -235,8 +258,8 @@ app.post('/signUp', (req, res) => {
 
         const roleId = req.body.IdStatutUtil || 1;
         const tempPseudo = "En attente"; // Valeur par défaut avant l'onboarding
-        const insertSql = "INSERT INTO utilisateurs (Nom, Prenom, Email, Hash_password, IdStatutUtil, Pseudo, salt) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        db.query(insertSql, [nom, prenom, email, password, roleId, tempPseudo, ""], (err, result) => {
+        const insertSql = "INSERT INTO utilisateurs (Nom, Prenom, Email, Hash_password, IdStatutUtil, Pseudo, salt_id) VALUES (?, ?, ?, ?, ?, ?, NULL)";
+        db.query(insertSql, [nom, prenom, email, password, roleId, tempPseudo], (err, result) => {
             if (err) {
                 console.error("Erreur lors de l'inscription :", err.message);
                 return res.status(500).json({ error: "Erreur lors de l'inscription", detail: err.message });

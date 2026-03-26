@@ -104,9 +104,19 @@ function App() {
         setCurrentPage('dashboard');
     };
 
-    // Cas spécial : Page d'inscription pour le personnel
+    // Cas spécial : Page d'inscription pour le personnel (Seulement pour Admin)
     if (isRegisterStaff) {
-        return <RegisterStaff />;
+        if (user && user.IdStatutUtil === 4) {
+            return <RegisterStaff user={user} />;
+        }
+        return (
+            <div style={{ textAlign: "center", marginTop: "100px", zIndex: 50, position: 'relative' }}>
+                <p style={{ marginBottom: "20px", fontSize: "18px" }}>Vous n'êtes pas autorisé à accéder à cette page d'administration.</p>
+                <button className="return-button" onClick={() => { window.location.hash = ""; setIsRegisterStaff(false); }}>
+                    Retour au tableau de bord
+                </button>
+            </div>
+        );
     }
 
     // Cas spécial : Première connexion, l'utilisateur doit changer son mot de passe
@@ -122,8 +132,8 @@ function App() {
         return <Login onLogin={setUser} onNavigate={handleNavigate} />;
     }
 
-    // Sécurité : Vérifie que l'utilisateur a un rôle autorisé (RH ou Juriste)
-    if (!["RH", "Juriste"].includes(user.statut)) {
+    // Sécurité : Vérifie que l'utilisateur a un rôle autorisé (RH, Juriste ou Admin)
+    if (!["RH", "Juriste", "Admin"].includes(user.statut)) {
         return (
             <div style={{ textAlign: "center", marginTop: "100px", zIndex: 50, position: 'relative' }}>
                 <p style={{ marginBottom: "20px", fontSize: "18px" }}>Vous n'êtes pas autorisé à accéder à cette page.</p>

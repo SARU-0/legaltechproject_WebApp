@@ -113,6 +113,21 @@ const Sidebar = ({ onNavigate, currentPage, user, onLogout, isDarkMode, toggleTh
                         </button>
                     );
                 })}
+
+                {/* Lien spécifique pour l'Admin vers le Staff Onboarding */}
+                {user.IdStatutUtil === 4 && (
+                    <button
+                        className={`nav-item ${window.location.hash === '#register-staff' ? 'active' : ''}`}
+                        onClick={() => {
+                            window.location.hash = '#register-staff';
+                            // Note: App.jsx listens for hashchange and updates isRegisterStaff
+                        }}
+                        style={{ animationDelay: `${menuItems.length * 60}ms`, marginTop: '12px', borderTop: '1px solid var(--border-color, #e5e7eb)20', paddingTop: '12px' }}
+                    >
+                        <UserRoundPlus className="nav-icon" size={20} />
+                        {!isCollapsed && <span className="nav-label">Compte Gestionnaire</span>}
+                    </button>
+                )}
             </nav>
 
             <div className="sidebar-divider"></div>
@@ -154,4 +169,4 @@ const Sidebar = ({ onNavigate, currentPage, user, onLogout, isDarkMode, toggleTh
     );
 };
 
-export default Sidebar;
+export default Sidebar;

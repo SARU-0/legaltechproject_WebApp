@@ -59,8 +59,8 @@ const Signalements = ({ onNavigate, user }) => {
       return false;
     }
 
-    // 2. Filtre "Masquer les dossiers d'autres RH"
-    if (hideOtherHR) {
+    // 2. Filtre "Masquer les dossiers d'autres RH" (Ignoré pour l'Admin)
+    if (hideOtherHR && user.IdStatutUtil !== 4) {
       const isTakenByOther = (report.LibelleStatutSi === "Pris en charge" || report.LibelleStatutSi === "Traitement en cours") && 
                               report.IdResponsable && 
                               report.IdResponsable !== user.IdUtil;
@@ -174,8 +174,8 @@ const Signalements = ({ onNavigate, user }) => {
                                            item.IdResponsable && 
                                            item.IdResponsable !== user.IdUtil;
 
-                    // Sécurité : on empêche d'ouvrir les dossiers des collègues
-                    if (isTakenByOther) {
+                    // Sécurité : on empêche d'ouvrir les dossiers des collègues (sauf pour l'Admin)
+                    if (isTakenByOther && user.IdStatutUtil !== 4) {
                       alert("Ce dossier est déjà pris en charge par un autre membre de l'équipe.");
                       return;
                     }
